@@ -10,7 +10,7 @@ namespace SmartGestionApp.Views
             try
             {
                 InitializeComponent();
-                MainFrame.Navigate(new ClientesPage());
+                MainFrame.Navigate(new DashboardPage()); // Página inicial
             }
             catch (Exception ex)
             {
@@ -18,6 +18,10 @@ namespace SmartGestionApp.Views
             }
         }
 
+        private void Dashboard_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(new DashboardPage());
+        }
 
         private void Clientes_Click(object sender, RoutedEventArgs e)
         {

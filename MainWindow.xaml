@@ -10,9 +10,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
-            <!-- Menú lateral -->
             <ColumnDefinition Width="*"/>
-            <!-- Contenido -->
         </Grid.ColumnDefinitions>
 
         <!-- Menú lateral -->
@@ -24,6 +22,7 @@
                        Margin="10"
                        HorizontalAlignment="Center"/>
 
+            <Button Content="Dashboard" Click="Dashboard_Click" Style="{StaticResource MenuButtonStyle}"/>
             <Button Content="Clientes" Click="Clientes_Click" Style="{StaticResource MenuButtonStyle}"/>
             <Button Content="Trabajos" Click="Trabajos_Click" Style="{StaticResource MenuButtonStyle}"/>
             <Button Content="Presupuestos" Click="Presupuestos_Click" Style="{StaticResource MenuButtonStyle}"/>
