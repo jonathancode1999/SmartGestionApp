@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using SmartGestionApp.Properties;
 using SmartGestionApp.Views.Pages;
 
 namespace SmartGestionApp.Views
@@ -55,9 +56,18 @@ namespace SmartGestionApp.Views
 
         private void CerrarSesion_Click(object sender, RoutedEventArgs e)
         {
+            // Limpiar credenciales almacenadas
+            Settings.Default.Email = string.Empty;
+            Settings.Default.PasswordHash = string.Empty;
+            Settings.Default.Save();
+
+            // Mostrar la ventana de inicio de sesión
             var loginWindow = new LoginWindow();
             loginWindow.Show();
+
+            // Cerrar la ventana principal
             this.Close();
         }
+
     }
 }
