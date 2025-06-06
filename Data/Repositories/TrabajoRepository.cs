@@ -19,7 +19,7 @@ namespace SmartGestionApp.Data.Repositories
             using var con = new SqliteConnection(_connectionString);
             con.Open();
 
-            var cmd = con.CreateCommand();
+            using var cmd = con.CreateCommand();
             cmd.CommandText = @"
                 SELECT Id, ClienteId, UsuarioId, EstadoId, TipoTrabajoId, Descripcion, Fecha, CreatedAt
                 FROM Trabajos
@@ -35,14 +35,46 @@ namespace SmartGestionApp.Data.Repositories
                     Id = reader.GetInt32(0),
                     ClienteId = reader.GetInt32(1),
                     UsuarioId = reader.GetInt32(2),
-                    EstadoId = reader.IsDBNull(3) ? null : reader.GetInt32(3),
-                    TipoTrabajoId = reader.IsDBNull(4) ? null : reader.GetInt32(4),
+                    EstadoId = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
+                    TipoTrabajoId = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
                     Descripcion = reader.IsDBNull(5) ? null : reader.GetString(5),
                     Fecha = reader.GetDateTime(6),
                     CreatedAt = reader.GetDateTime(7)
                 };
             }
             return null;
+        }
+        public List<Trabajo> GetByClientId(int clientId)
+        {
+            var list = new List<Trabajo>();
+
+            using var con = new SqliteConnection(_connectionString);
+            con.Open();
+
+            using var cmd = con.CreateCommand();
+            cmd.CommandText = @"
+		SELECT Id, ClienteId, UsuarioId, EstadoId, TipoTrabajoId, Descripcion, Fecha, CreatedAt
+		FROM Trabajos
+		WHERE ClienteId = @clientId
+	";
+            cmd.Parameters.AddWithValue("@clientId", clientId);
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(new Trabajo
+                {
+                    Id = reader.GetInt32(0),
+                    ClienteId = reader.GetInt32(1),
+                    UsuarioId = reader.GetInt32(2),
+                    EstadoId = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
+                    TipoTrabajoId = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
+                    Descripcion = reader.IsDBNull(5) ? null : reader.GetString(5),
+                    Fecha = reader.GetDateTime(6),
+                    CreatedAt = reader.GetDateTime(7)
+                });
+            }
+            return list;
         }
 
         public List<Trabajo> GetAll()
@@ -51,7 +83,7 @@ namespace SmartGestionApp.Data.Repositories
             using var con = new SqliteConnection(_connectionString);
             con.Open();
 
-            var cmd = con.CreateCommand();
+            using var cmd = con.CreateCommand();
             cmd.CommandText = @"
                 SELECT Id, ClienteId, UsuarioId, EstadoId, TipoTrabajoId, Descripcion, Fecha, CreatedAt
                 FROM Trabajos
@@ -65,8 +97,8 @@ namespace SmartGestionApp.Data.Repositories
                     Id = reader.GetInt32(0),
                     ClienteId = reader.GetInt32(1),
                     UsuarioId = reader.GetInt32(2),
-                    EstadoId = reader.IsDBNull(3) ? null : reader.GetInt32(3),
-                    TipoTrabajoId = reader.IsDBNull(4) ? null : reader.GetInt32(4),
+                    EstadoId = reader.IsDBNull(3) ? (int?)null : reader.GetInt32(3),
+                    TipoTrabajoId = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
                     Descripcion = reader.IsDBNull(5) ? null : reader.GetString(5),
                     Fecha = reader.GetDateTime(6),
                     CreatedAt = reader.GetDateTime(7)
@@ -80,7 +112,7 @@ namespace SmartGestionApp.Data.Repositories
             using var con = new SqliteConnection(_connectionString);
             con.Open();
 
-            var cmd = con.CreateCommand();
+            using var cmd = con.CreateCommand();
             cmd.CommandText = @"
                 INSERT INTO Trabajos (ClienteId, UsuarioId, EstadoId, TipoTrabajoId, Descripcion, Fecha, CreatedAt)
                 VALUES (@clienteId, @usuarioId, @estadoId, @tipoTrabajoId, @descripcion, @fecha, @createdAt);
@@ -94,7 +126,7 @@ namespace SmartGestionApp.Data.Repositories
             cmd.Parameters.AddWithValue("@fecha", trabajo.Fecha);
             cmd.Parameters.AddWithValue("@createdAt", trabajo.CreatedAt);
 
-            var id = (long)cmd.ExecuteScalar();
+            var id = (long)cmd.ExecuteScalar()!;
             return (int)id;
         }
 
@@ -103,7 +135,7 @@ namespace SmartGestionApp.Data.Repositories
             using var con = new SqliteConnection(_connectionString);
             con.Open();
 
-            var cmd = con.CreateCommand();
+            using var cmd = con.CreateCommand();
             cmd.CommandText = @"
                 UPDATE Trabajos SET
                     ClienteId = @clienteId,
@@ -131,12 +163,55 @@ namespace SmartGestionApp.Data.Repositories
             using var con = new SqliteConnection(_connectionString);
             con.Open();
 
-            var cmd = con.CreateCommand();
+            using var cmd = con.CreateCommand();
             cmd.CommandText = "DELETE FROM Trabajos WHERE Id = @id";
             cmd.Parameters.AddWithValue("@id", id);
 
             var rows = cmd.ExecuteNonQuery();
             return rows > 0;
+        }
+
+        public List<TrabajoViewModel> GetAllViewModel()
+        {
+            var list = new List<TrabajoViewModel>();
+
+            using var con = new SqliteConnection(_connectionString);
+            con.Open();
+
+            using var cmd = con.CreateCommand();
+            cmd.CommandText = @"
+                SELECT 
+                    t.Id,
+                    c.Nombre AS ClienteNombre,
+                    u.Nombre AS UsuarioNombre,
+                    COALESCE(e.Nombre, '') AS EstadoNombre,
+                    COALESCE(tt.Nombre, '') AS TipoTrabajoNombre,
+                    t.Descripcion,
+                    t.Fecha
+                FROM Trabajos t
+                INNER JOIN Clientes c ON t.ClienteId = c.Id
+                INNER JOIN Usuarios u ON t.UsuarioId = u.Id
+                LEFT JOIN EstadosTrabajo e ON t.EstadoId = e.Id
+                LEFT JOIN TiposTrabajo tt ON t.TipoTrabajoId = tt.Id
+                ORDER BY t.Fecha DESC;
+            ";
+
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(new TrabajoViewModel
+                {
+                    Id = reader.GetInt32(0),
+                    ClienteNombre = reader.GetString(1),
+                    UsuarioNombre = reader.GetString(2),
+                    EstadoNombre = reader.GetString(3),
+                    TipoTrabajoNombre = reader.GetString(4),
+                    Descripcion = reader.IsDBNull(5) ? null : reader.GetString(5),
+                    Fecha = reader.GetDateTime(6)
+                });
+            }
+
+            return list;
         }
     }
 }

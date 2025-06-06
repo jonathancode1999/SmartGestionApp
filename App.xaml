@@ -32,6 +32,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <DropShadowEffect x:Key="DropShadow" BlurRadius="8" ShadowDepth="2" Direction="270" Opacity="0.3"/>
         </ResourceDictionary>
     </Application.Resources>
 

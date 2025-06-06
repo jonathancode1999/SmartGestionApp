@@ -1,12 +1,52 @@
-﻿<UserControl x:Class="SmartGestionApp.Views.Pages.TrabajosPage"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:SmartGestionApp.Views.Pages"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+﻿<Page x:Class="SmartGestionApp.Views.TrabajosPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="clr-namespace:SmartGestionApp.Views"
+      Background="#F5F7FA" 
+      Title="Trabajos"
+      >
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Text="Gestión de Trabajos" 
+                   FontSize="26" FontWeight="Bold" Foreground="#2C3E50" Margin="0,0,0,15"/>
+
+        <!-- DataGrid -->
+        <DataGrid x:Name="TrabajosDataGrid" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False"
+                  IsReadOnly="True" SelectionMode="Single"
+                  GridLinesVisibility="Horizontal" RowBackground="White" AlternatingRowBackground="#F0F4F7"
+                  BorderBrush="#BDC3C7" BorderThickness="1"
+                  FontSize="14" Foreground="#34495E" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="Cliente ID" Binding="{Binding ClienteId}" Width="80"/>
+                <DataGridTextColumn Header="Usuario ID" Binding="{Binding UsuarioId}" Width="80"/>
+                <DataGridTextColumn Header="Estado ID" Binding="{Binding EstadoId}" Width="80"/>
+                <DataGridTextColumn Header="Tipo Trabajo ID" Binding="{Binding TipoTrabajoId}" Width="100"/>
+                <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="*"/>
+                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=d}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0" >
+            <Button x:Name="BtnNuevo" Content="Nuevo" Width="90" Height="30" Margin="0,0,10,0"
+                    Background="#2980B9" Foreground="White" FontWeight="SemiBold"
+                    Cursor="Hand" Click="BtnNuevo_Click" />
+            <Button x:Name="BtnEditar" Content="Editar" Width="90" Height="30" Margin="0,0,10,0"
+                    Background="#2980B9" Foreground="White" FontWeight="SemiBold"
+                    Cursor="Hand" Click="BtnEditar_Click" />
+            <Button x:Name="BtnVer" Content="Ver" Width="90" Height="30" Margin="0,0,10,0"
+                    Background="#34495E" Foreground="White" FontWeight="SemiBold"
+                    Cursor="Hand" Click="BtnVer_Click" />
+            <Button x:Name="BtnEliminar" Content="Eliminar" Width="90" Height="30"
+                    Background="#E74C3C" Foreground="White" FontWeight="SemiBold"
+                    Cursor="Hand" Click="BtnEliminar_Click" />
+        </StackPanel>
     </Grid>
-</UserControl>
+</Page>

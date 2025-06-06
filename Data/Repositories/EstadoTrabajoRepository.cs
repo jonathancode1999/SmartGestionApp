@@ -19,7 +19,7 @@ namespace SmartGestionApp.Data.Repositories
             using var con = new SqliteConnection(_connectionString);
             con.Open();
             var cmd = con.CreateCommand();
-            cmd.CommandText = "SELECT Id, Nombre FROM EstadoTrabajos WHERE Id = @id";
+            cmd.CommandText = "SELECT Id, Nombre FROM EstadosTrabajo WHERE Id = @id";
             cmd.Parameters.AddWithValue("@id", id);
 
             using var reader = cmd.ExecuteReader();
@@ -40,7 +40,7 @@ namespace SmartGestionApp.Data.Repositories
             using var con = new SqliteConnection(_connectionString);
             con.Open();
             var cmd = con.CreateCommand();
-            cmd.CommandText = "SELECT Id, Nombre FROM EstadoTrabajos";
+            cmd.CommandText = "SELECT Id, Nombre FROM EstadosTrabajo";
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -60,7 +60,7 @@ namespace SmartGestionApp.Data.Repositories
             con.Open();
             var cmd = con.CreateCommand();
             cmd.CommandText = @"
-                INSERT INTO EstadoTrabajos (Nombre)
+                INSERT INTO EstadosTrabajo (Nombre)
                 VALUES (@nombre);
                 SELECT last_insert_rowid();";
             cmd.Parameters.AddWithValue("@nombre", estado.Nombre);
@@ -75,7 +75,7 @@ namespace SmartGestionApp.Data.Repositories
             con.Open();
             var cmd = con.CreateCommand();
             cmd.CommandText = @"
-                UPDATE EstadoTrabajos SET Nombre = @nombre WHERE Id = @id";
+                UPDATE EstadosTrabajo SET Nombre = @nombre WHERE Id = @id";
             cmd.Parameters.AddWithValue("@nombre", estado.Nombre);
             cmd.Parameters.AddWithValue("@id", estado.Id);
 
@@ -88,7 +88,7 @@ namespace SmartGestionApp.Data.Repositories
             using var con = new SqliteConnection(_connectionString);
             con.Open();
             var cmd = con.CreateCommand();
-            cmd.CommandText = "DELETE FROM EstadoTrabajos WHERE Id = @id";
+            cmd.CommandText = "DELETE FROM EstadosTrabajo WHERE Id = @id";
             cmd.Parameters.AddWithValue("@id", id);
 
             var rows = cmd.ExecuteNonQuery();
